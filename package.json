@@ -1,0 +1,25 @@
+{
+  "devDependencies": {
+    "@types/node": "^20.11.4"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "webbserverprogrammering",
+  "version": "1.0.0",
+  "main": "server.js",
+  "dependencies": {
+    "undici-types": "^5.26.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axelNTI/Webbserverprogrammering.git"
+  },
+  "author": "Axel Thornberg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/axelNTI/Webbserverprogrammering/issues"
+  },
+  "homepage": "https://github.com/axelNTI/Webbserverprogrammering#readme",
+  "description": ""
+}
