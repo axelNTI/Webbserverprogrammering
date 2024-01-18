@@ -1,9 +1,29 @@
 body {
-    & > main {
-        min-height: 100svh;
+  background: url("../images/02_alpha.png");
+  background-size: auto 100vh;
+  background-attachment: fixed;
+  background-position: center;
+
+  & > header {
+    text-align: center;
+    margin-top: 10svh;
+    & > h1 {
+      color: white;
+      font-size: 5svh;
+      text-shadow: 3px 3px black;
     }
-    & > footer {
-        min-height: 100svh;
-        background-color: rgb(50, 50, 50);
+  }
+  & > main {
+    margin: 10svh 30svw;
+    width: 40svw;
+    & > p {
+      color: white;
+      font-size: large;
+      line-height: 20px;
+      text-shadow: 1px 1px black;
     }
+    & > a {
+      color: rgb(12, 138, 255);
+    }
+  }
 }
