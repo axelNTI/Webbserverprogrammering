@@ -1,0 +1,9 @@
+body {
+    & > main {
+        min-height: 100svh;
+    }
+    & > footer {
+        min-height: 100svh;
+        background-color: rgb(50, 50, 50);
+    }
+}
