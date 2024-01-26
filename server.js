@@ -3,67 +3,48 @@ const bodyParser = require("body-parser");
 const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
-const fs = require("node:fs");
+const mongoose = require("mongoose");
+
 app.use(express.static("./04"));
 app.use(bodyParser.urlencoded({ extended: false }));
 
-function writeMessage(message, callback) {
-  readMessages((err, messages) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-    }
-    messages.push(message);
-    fs.writeFile("./messages.json", JSON.stringify(messages), (writeErr) => {
-      if (writeErr) {
-        console.error(writeErr);
-        res.sendStatus(500);
-      }
-      callback(null);
-    });
+const dbUrl =
+  "mongodb+srv://axelthornberg:thvianax@cluster0.sjvn8kc.mongodb.net/?retryWrites=true&w=majority";
+
+let Message = mongoose.model("Message", {
+  name: String,
+  message: String,
+});
+
+app.get("/meddelanden", (req, res) => {
+  Message.find().then((item) => {
+    res.send(item);
   });
-}
+});
 
-function readMessages(callback) {
-  fs.readFile("./messages.json", "utf8", (err, data) => {
-    if (err) {
-      console.error(err)
-      res.sendStatus(500)
-    }
-    let messages = JSON.parse(data);
-    callback(null, messages);
-  });
-}
-
-readMessages((err, messages) => {
-  if (err) {
-    console.error(err)
-    res.sendStatus(500)
-  }
-  app.get("/meddelanden", (req, res) => {
-    res.send(messages);
-  });
-
-  app.post("/meddelanden", (req, res) => {
-    messages.push(req.body);
-
-    // Call writeMessage and send the response only when it's done
-    writeMessage(req.body, (writeErr) => {
-      if (writeErr) {
-        console.error(writeErr)
-        res.sendStatus(500)
-      }
+app.post("/meddelanden", (req, res) => {
+  let message = new Message(req.body);
+  message
+    .save()
+    .then((item) => {
       io.emit("message", req.body);
-      res.sendStatus(200);
+    })
+    .catch((err) => {
+      res.status(500).send("Unable to save to database");
     });
-  });
 });
 
 io.on("connection", (socket) => {
   console.log("Anslutning");
 });
 
+try {
+  mongoose.connect(dbUrl);
+  console.log("Ansluten till databas");
+} catch {
+  console.error(error);
+}
+
 http.listen(3000, () => {
   console.log("Servern körs, besök http://localhost:3000");
 });
-  
