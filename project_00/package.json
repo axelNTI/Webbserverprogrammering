@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js"
   },
-  "name": "webbserverprogrammering",
+  "name": "learning",
   "version": "1.0.0",
   "main": "server.js",
   "dependencies": {
