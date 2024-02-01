@@ -5,7 +5,7 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const mongoose = require("mongoose");
 
-app.use(express.static("./04"));
+app.use(express.static("./project_00/04"));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const dbUrl =

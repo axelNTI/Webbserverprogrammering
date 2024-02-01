@@ -1,0 +1,43 @@
+body {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  & > header {
+    width: 100svw;
+    height: 10svh;
+    background-color: seagreen;
+    & > h1 {
+      padding-top: 3svh;
+    }
+  }
+  & > main {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    & > section {
+      & > * {
+        margin: 10px;
+      }
+      & > table {
+        width: 100%;
+        & tr:not(:first-of-type) {
+          text-align: right;
+          & > td:last-of-type {
+            & > select {
+              width: 75px;
+            }
+          }
+        }
+        & * {
+          margin-bottom: 3px;
+        }
+      }
+    }
+    & > article {
+      & > * {
+        margin: 10px;
+      }
+    }
+  }
+}
