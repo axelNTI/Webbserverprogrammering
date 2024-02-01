@@ -4,6 +4,7 @@ const app = express();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const mongoose = require("mongoose");
+const { log } = require("console");
 app.use(express.static("./project_01/webpage"));
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -58,23 +59,24 @@ let lookupTable = {
 function main(arg) {
   let knownVariables = arg[0];
   let search = arg[1];
-  let returnValue;
+  let knownVariablesValues = arg[2];
+  let knownVariablesUnits = arg[3];
   // Skriver ut den sökta storhetens värde om den är känd.
   if (knownVariables.indexOf(search) != -1) {
     let value =
-      parseFloat(document.querySelector(`#v_${search}`).value) *
-      lookupTable[search][document.querySelector(`#e_${search}`).value];
+      parseFloat(knownVariablesValues[knownVariables.indexOf(search)]) *
+      lookupTable[search][knownVariablesUnits[knownVariables.indexOf(search)]];
     if (isNaN(value)) {
-      returnValue = `Minst en storhet saknade värde`;
+      var returnValue = `Minst en storhet saknade värde`;
     } else {
-      returnValue = `Svar: ${value} ${unit[search]}`;
+      var returnValue = `Svar: ${value} ${unit[search]}`;
     }
   } else {
     // Använder funktionen nedan för att hitta en fungerande formel
     let formula = findFormula(knownVariables, search, []);
-
     // Om ingen formel fungerar
     if (!formula) {
+      console.log("1");
       returnValue = "Ingen möjlig formel";
     } else {
       // Räknar ut formelns värde
@@ -84,40 +86,24 @@ function main(arg) {
           // Byter storheter mot deras värde i SI-enheter
           i = i.replaceAll(
             j,
-            parseFloat(document.querySelector(`#v_${j}`).value) *
-              lookupTable[j][document.querySelector(`#e_${j}`).value]
+            parseFloat(knownVariablesValues[knownVariables.indexOf(j)]) *
+              lookupTable[j][knownVariablesUnits[knownVariables.indexOf(j)]]
           );
         }
         // Räknar ut formelns värde
         results.push(eval(i));
       }
-
-      // Om flera möjliga svar finns, skriver ut alla.
-      if (Array.isArray(results)) {
-        let str = "";
-        for (let i of results) {
-          if (!isNaN(i)) {
-            str += `${results} ${unit[search]}, `;
-          }
-        }
-        if (str.length == 3) {
-          returnValue = "Ingen möjlig formel";
-        } else {
-          returnValue = str;
-        }
-      }
       // Skrivs ut om ingen formel fungerar
       if (isNaN(results)) {
-        returnValue = "Ingen möjlig formel";
+        console.log("3");
+        var returnValue = "Ingen möjlig formel";
       } else {
         // Skriver ut formelns värde
-        returnValue = `Svar: ${results} ${unit[search]}`;
+        var returnValue = `Svar: ${results} ${unit[search]}`;
       }
     }
   }
-  io.on("connection", (socket) => {
-    socket.emit("serverToClientDataTransfer", returnValue);
-  });
+  io.emit("serverToClientDataTransfer", returnValue);
 }
 
 function findFormula(knownVariables, search, triedVariables) {

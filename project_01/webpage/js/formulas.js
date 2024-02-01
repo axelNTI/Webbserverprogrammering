@@ -13,16 +13,25 @@ function main() {
   let = knownVariablesValues = [];
 
   knownVariables.forEach((element) => {
-    knownVariablesValues.push($(`v_${element})`).val());
+    knownVariablesValues.push($(`#v_${element}`).val());
   });
-  console.log(knownVariablesValues);
+  let = knownVariablesUnits = [];
+
+  knownVariables.forEach((element) => {
+    knownVariablesUnits.push($(`#e_${element}`).val());
+  });
 
   // Skickar det till servern för utrökning
-  socket.emit("clientToServerDataTransfer", [knownVariables, search]);
+  socket.emit("clientToServerDataTransfer", [
+    knownVariables,
+    search,
+    knownVariablesValues,
+    knownVariablesUnits,
+  ]);
 }
 
 // Tar tillbaka resultatet
 socket.on("serverToClientDataTransfer", (returnValue) => {
   // Skriver ut formelns värde
-  $("output").text(returnValue);
+  $("output").html(`<p>${returnValue}</p>`);
 });
